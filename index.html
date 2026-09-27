@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ГАРАЖ №7 — Кузовной ремонт и покраска</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Teko:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --black: #0d0d0e;
+  --dark: #161618;
+  --dark2: #1e1e21;
+  --steel: #2b2b2f;
+  --line: #38383d;
+  --paper: #eee9e1;
+  --paper-dim: #a9a49a;
+  --orange: #ff5a1f;
+  --orange-dim: #c94716;
+  --yellow: #ffc93c;
+  --green: #7fb069;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background: var(--black);
+  color: var(--paper);
+  font-family: 'Oswald', sans-serif;
+  overflow-x: hidden;
+}
+
+::selection{background:var(--orange); color:var(--black);}
+
+/* ---------- textures ---------- */
+.noise{
+  position:fixed; inset:0; pointer-events:none; z-index:200;
+  opacity:0.05; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.diagonal-stripes{
+  background-image: repeating-linear-gradient(135deg, var(--orange) 0 22px, var(--yellow) 22px 44px);
+}
+
+/* ---------- top ticker ---------- */
+.ticker-wrap{
+  background:var(--orange); color:var(--black); overflow:hidden;
+  white-space:nowrap; border-bottom:3px solid var(--black); position:relative; z-index:100;
+}
+.ticker{
+  display:inline-block; padding:7px 0;
+  font-family:'JetBrains Mono', monospace; font-weight:700; font-size:clamp(10.5px,2.4vw,13px);
+  letter-spacing:1px; text-transform:uppercase;
+  animation: scrollTicker 22s linear infinite;
+}
+.ticker span{margin:0 clamp(14px,3vw,28px);}
+@keyframes scrollTicker{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+
+/* ---------- header ---------- */
+header{
+  position:sticky; top:0; z-index:100;
+  background:rgba(13,13,14,0.92); backdrop-filter: blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1280px; margin:0 auto; padding:16px clamp(18px,4vw,32px);
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.logo{
+  font-family:'Teko', sans-serif; font-weight:700; font-size:clamp(26px,4vw,32px);
+  letter-spacing:1px; color:var(--paper); display:flex; align-items:center; gap:10px;
+  text-decoration:none; flex-shrink:0;
+}
+.logo .dot{color:var(--orange);}
+.logo-num{
+  font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:700;
+  background:var(--orange); color:var(--black); padding:3px 8px; border-radius:2px;
+  transform: rotate(-3deg);
+}
+.nav-links{display:flex; gap:36px; list-style:none;}
+.nav-links a{
+  color:var(--paper-dim); text-decoration:none; font-size:14px; font-weight:500;
+  text-transform:uppercase; letter-spacing:1.2px; position:relative; transition:color .25s;
+}
+.nav-links a:hover{color:var(--paper);}
+.nav-links a::after{
+  content:''; position:absolute; left:0; bottom:-6px; width:0; height:2px; background:var(--orange);
+  transition:width .25s;
+}
+.nav-links a:hover::after{width:100%;}
+.nav-links-call{display:none;}
+.nav-cta{
+  background:var(--orange); color:var(--black); padding:11px 20px; text-decoration:none;
+  font-weight:700; text-transform:uppercase; font-size:13px; letter-spacing:1px;
+  border:2px solid var(--orange); transition:.25s; white-space:nowrap; flex-shrink:0;
+}
+.nav-cta:hover{background:transparent; color:var(--orange);}
+.burger{
+  display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;
+  width:44px; height:44px; align-items:center; justify-content:center; flex-shrink:0;
+}
+.burger span{width:24px; height:2px; background:var(--paper); transition:.25s;}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; min-height:auto; display:flex; align-items:center;
+  padding:clamp(40px,7vw,60px) clamp(18px,4vw,32px) clamp(50px,8vw,80px); max-width:1280px; margin:0 auto;
+  background-image:
+    radial-gradient(circle at 85% 20%, rgba(255,90,31,0.15), transparent 45%);
+}
+.hero-grid-bg{
+  position:absolute; inset:0; z-index:-1;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 60% 40%, black 20%, transparent 80%);
+  opacity:0.5;
+}
+.hero-inner{display:grid; grid-template-columns: 1.15fr 0.85fr; gap:50px; align-items:center; width:100%;}
+.hero-tag{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:'JetBrains Mono', monospace; font-size:clamp(10.5px,2.2vw,12px); letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--yellow); margin-bottom:20px;
+  border:1px solid var(--line); padding:7px 14px; border-radius:100px;
+}
+.hero-tag::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 1.6s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.35;}}
+.hero h1{
+  font-family:'Teko', sans-serif; font-weight:700; font-size:clamp(52px, 7vw, 96px);
+  line-height:0.92; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:22px;
+}
+.hero h1 .line2{color:var(--orange); -webkit-text-stroke: 0px;}
+.hero h1 .outline{
+  color:transparent; -webkit-text-stroke: 1.5px var(--paper);
+}
+.hero p{
+  font-size:18px; color:var(--paper-dim); max-width:480px; line-height:1.6; margin-bottom:34px;
+}
+.hero-buttons{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:40px;}
+.btn-primary{
+  background:var(--orange); color:var(--black); padding:16px 28px; text-decoration:none;
+  font-weight:700; text-transform:uppercase; letter-spacing:1px; font-size:14.5px;
+  border:2px solid var(--orange); position:relative; overflow:hidden; transition:.3s;
+  display:inline-flex; align-items:center; justify-content:center; gap:10px; text-align:center;
+}
+.btn-primary:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--yellow);}
+.btn-secondary{
+  color:var(--paper); padding:16px 28px; text-decoration:none; font-weight:600;
+  text-transform:uppercase; letter-spacing:1px; font-size:14.5px; border:2px solid var(--line);
+  transition:.3s; text-align:center; display:inline-flex; align-items:center; justify-content:center;
+}
+.btn-secondary:hover{border-color:var(--paper);}
+.hero-stats{display:flex; gap:clamp(20px,4vw,40px); flex-wrap:wrap;}
+.stat b{
+  display:block; font-family:'Teko', sans-serif; font-size:clamp(34px,5vw,44px); font-weight:600; color:var(--paper);
+  line-height:1;
+}
+.stat span{font-size:11.5px; text-transform:uppercase; letter-spacing:1.3px; color:var(--paper-dim);}
+
+/* hero visual - tire/gauge graphic */
+.hero-visual{position:relative; display:flex; justify-content:center; align-items:center; height:clamp(240px,38vw,520px);}
+.gauge-wrap{position:relative; width:clamp(220px,32vw,420px); height:clamp(220px,32vw,420px);}
+.gauge-ring{
+  position:absolute; inset:0; border-radius:50%;
+  border: 2px solid var(--line);
+  background: conic-gradient(from -130deg, var(--orange) 0deg, var(--yellow) 220deg, var(--line) 220deg 360deg);
+  -webkit-mask: radial-gradient(circle, transparent 62%, black 63%);
+  mask: radial-gradient(circle, transparent 62%, black 63%);
+  animation: spin 30s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.gauge-center{
+  position:absolute; inset:16%; border-radius:50%; background:var(--dark2);
+  border:1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+}
+.gauge-center .big{font-family:'Teko', sans-serif; font-size:clamp(48px,9vw,100px); font-weight:700; color:var(--paper); line-height:0.9;}
+.gauge-center .small{font-family:'JetBrains Mono',monospace; font-size:clamp(9px,1.6vw,12px); color:var(--orange); letter-spacing:1.5px; margin-top:6px; text-transform:uppercase; text-align:center; padding:0 8px;}
+.bolt{position:absolute; width:14px; height:14px; border-radius:50%; background:var(--steel); border:2px solid var(--line);}
+.bolt.b1{top:5px; left:50%; transform:translateX(-50%);}
+.bolt.b2{bottom:5px; left:50%; transform:translateX(-50%);}
+.bolt.b3{left:5px; top:50%; transform:translateY(-50%);}
+.bolt.b4{right:5px; top:50%; transform:translateY(-50%);}
+
+/* ---------- section shared ---------- */
+section{padding:clamp(56px,10vw,110px) clamp(18px,4vw,32px); max-width:1280px; margin:0 auto; position:relative;}
+.section-head{margin-bottom:clamp(36px,6vw,64px); max-width:640px;}
+.eyebrow{
+  font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--orange); margin-bottom:14px; display:flex; align-items:center; gap:10px;
+}
+.eyebrow::before{content:''; width:24px; height:2px; background:var(--orange);}
+.section-head h2{
+  font-family:'Teko', sans-serif; font-weight:600; font-size:clamp(38px,4.5vw,58px);
+  text-transform:uppercase; line-height:1; letter-spacing:0.5px;
+}
+.section-head p{color:var(--paper-dim); margin-top:16px; font-size:16px; max-width:520px; line-height:1.6;}
+
+/* ---------- services ---------- */
+.services{background:var(--dark);}
+.services-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+.service-card{
+  background:var(--dark); padding:clamp(26px,4vw,38px) clamp(20px,3.5vw,30px); position:relative; overflow:hidden; transition:.3s;
+  min-height:240px; display:flex; flex-direction:column;
+}
+.service-card:hover{background:var(--dark2);}
+.service-num{
+  font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--paper-dim); margin-bottom:26px;
+}
+.service-icon{margin-bottom:22px;}
+.service-card h3{
+  font-family:'Teko', sans-serif; font-size:30px; font-weight:600; text-transform:uppercase; margin-bottom:12px;
+  letter-spacing:0.5px;
+}
+.service-card p{color:var(--paper-dim); font-size:14.5px; line-height:1.6; flex-grow:1;}
+.service-tag{
+  margin-top:20px; font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--orange);
+  text-transform:uppercase; letter-spacing:1px; opacity:0; transform:translateY(6px); transition:.3s;
+}
+.service-card:hover .service-tag{opacity:1; transform:translateY(0);}
+.service-card::before{
+  content:''; position:absolute; top:0; left:0; width:4px; height:0; background:var(--orange); transition:.35s;
+}
+.service-card:hover::before{height:100%;}
+
+/* ---------- process ---------- */
+.process{background:var(--black);}
+.process-list{display:flex; flex-direction:column;}
+.process-item{
+  display:grid; grid-template-columns:minmax(70px,120px) 1fr 220px; gap:clamp(16px,3vw,30px); align-items:center;
+  padding:clamp(22px,4vw,34px) 0; border-bottom:1px solid var(--line); transition:.3s;
+}
+.process-item:first-child{border-top:1px solid var(--line);}
+.process-item:hover{padding-left:16px; background:linear-gradient(90deg, rgba(255,90,31,0.06), transparent);}
+.process-step{font-family:'Teko', sans-serif; font-size:clamp(40px,7vw,64px); font-weight:700; color:var(--steel); line-height:1; transition:.3s;}
+.process-item:hover .process-step{color:var(--orange);}
+.process-text h4{font-family:'Teko', sans-serif; font-size:clamp(20px,3vw,26px); text-transform:uppercase; font-weight:600; margin-bottom:6px; letter-spacing:0.5px;}
+.process-text p{color:var(--paper-dim); font-size:14px; line-height:1.55; max-width:520px;}
+.process-time{
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--paper-dim); text-align:right;
+  text-transform:uppercase; letter-spacing:1px; justify-self:end;
+}
+
+/* ---------- why us ---------- */
+.why{background:var(--dark);}
+.why-grid{display:grid; grid-template-columns: 0.9fr 1.1fr; gap:60px; align-items:center;}
+.why-points{display:flex; flex-direction:column; gap:0;}
+.why-point{display:flex; gap:20px; padding:24px 0; border-bottom:1px solid var(--line);}
+.why-point:first-child{border-top:1px solid var(--line);}
+.why-mark{
+  font-family:'Teko', sans-serif; font-size:28px; color:var(--orange); font-weight:700; flex-shrink:0; width:40px;
+}
+.why-point h4{font-size:18px; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; font-weight:500;}
+.why-point p{color:var(--paper-dim); font-size:14px; line-height:1.55;}
+.why-visual{
+  background:var(--dark2); border:1px solid var(--line); padding:clamp(28px,5vw,44px); position:relative;
+  min-height:clamp(320px,45vw,460px); display:flex; flex-direction:column; justify-content:center;
+}
+.why-visual::after{
+  content:'ГАРАЖ №7'; position:absolute; bottom:20px; right:24px;
+  font-family:'Teko', sans-serif; font-size:100px; font-weight:700; color:rgba(255,255,255,0.03);
+  white-space:nowrap; pointer-events:none;
+}
+.warranty-badge{
+  width:clamp(130px,20vw,170px); height:clamp(130px,20vw,170px); border-radius:50%; border:2px dashed var(--orange);
+  display:flex; align-items:center; justify-content:center; margin-bottom:clamp(24px,4vw,36px); position:relative;
+}
+.warranty-badge .inner{
+  text-align:center; font-family:'Teko', sans-serif; line-height:1;
+}
+.warranty-badge .inner b{font-size:clamp(42px,7vw,56px); display:block; color:var(--yellow);}
+.warranty-badge .inner span{font-size:14px; letter-spacing:2px; text-transform:uppercase; color:var(--paper-dim); font-family:'JetBrains Mono', monospace;}
+.why-visual h3{font-family:'Teko', sans-serif; font-size:34px; text-transform:uppercase; margin-bottom:14px;}
+.why-visual p{color:var(--paper-dim); font-size:15px; line-height:1.6; max-width:380px;}
+
+/* ---------- gallery / before after strip ---------- */
+.strip{background:var(--black); padding:0;}
+.strip-inner{overflow:hidden; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+.strip-track{display:flex; width:max-content; animation: marquee 26s linear infinite;}
+.strip-item{
+  width:clamp(190px,32vw,280px); height:clamp(130px,20vw,180px); margin-right:1px; flex-shrink:0; position:relative;
+  display:flex; align-items:flex-end; padding:clamp(12px,2.5vw,18px);
+  background:
+    linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.85)),
+    repeating-linear-gradient(135deg, var(--dark2) 0 18px, var(--steel) 18px 36px);
+}
+.strip-item span{
+  font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--paper);
+}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ---------- reviews ---------- */
+.reviews{background:var(--dark);}
+.reviews-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+.review-card{
+  background:var(--dark2); border:1px solid var(--line); padding:clamp(24px,4vw,32px); position:relative;
+}
+.review-stars{color:var(--yellow); font-size:16px; letter-spacing:3px; margin-bottom:18px;}
+.review-card p{font-size:15px; line-height:1.65; color:var(--paper); margin-bottom:24px; min-height:110px;}
+.review-author{display:flex; align-items:center; gap:12px; border-top:1px solid var(--line); padding-top:18px;}
+.review-avatar{
+  width:40px; height:40px; border-radius:50%; background:var(--orange); color:var(--black);
+  display:flex; align-items:center; justify-content:center; font-family:'Teko',sans-serif; font-weight:700; font-size:18px;
+}
+.review-author b{font-size:14px; font-weight:600; display:block;}
+.review-author span{font-size:12px; color:var(--paper-dim);}
+
+/* ---------- CTA ---------- */
+.cta{
+  background: var(--orange); color:var(--black); position:relative; overflow:hidden;
+  padding:clamp(56px,10vw,100px) clamp(18px,4vw,32px);
+}
+.cta-stripe{
+  position:absolute; inset:0; opacity:0.08;
+  background-image: repeating-linear-gradient(-45deg, var(--black) 0 3px, transparent 3px 40px);
+}
+.cta-inner{max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:40px; flex-wrap:wrap; position:relative;}
+.cta h2{font-family:'Teko', sans-serif; font-size:clamp(40px,5.5vw,72px); text-transform:uppercase; line-height:0.95; font-weight:700;}
+.cta p{font-size:16px; font-weight:500; margin-top:12px; max-width:420px;}
+.btn-dark{
+  background:var(--black); color:var(--paper); padding:18px 34px; text-decoration:none; font-weight:700;
+  text-transform:uppercase; letter-spacing:1px; font-size:15px; border:2px solid var(--black); transition:.3s;
+  white-space:nowrap; text-align:center; display:inline-block;
+}
+.btn-dark:hover{background:transparent; color:var(--black);}
+
+/* ---------- contact ---------- */
+.contact{background:var(--black);}
+.contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:70px;}
+.contact-info h3{font-family:'Teko', sans-serif; font-size:24px; text-transform:uppercase; margin-bottom:8px; color:var(--paper-dim); font-weight:500; letter-spacing:1px;}
+.contact-info .val{font-size:22px; font-weight:500; margin-bottom:34px; display:block;}
+.contact-info a.val{color:var(--paper); text-decoration:none; transition:.2s;}
+.contact-info a.val:hover{color:var(--orange);}
+.map-box{
+  height:clamp(220px,40vw,320px); border:1px solid var(--line); background:var(--dark2);
+  position:relative; overflow:hidden;
+}
+.map-box::before{
+  content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+  box-shadow: inset 0 0 0 1px rgba(255,90,31,0.15);
+}
+.map-box::after{
+  content:'ГАРАЖ №7'; position:absolute; top:12px; left:12px; z-index:3;
+  font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:1.2px; text-transform:uppercase;
+  color:var(--paper); background:var(--black); border:1px solid var(--orange); padding:6px 10px; pointer-events:none;
+}
+.map-box iframe{
+  width:100%; height:100%; display:block; border:0;
+  filter: grayscale(0.5) invert(0.92) contrast(0.9) brightness(0.95) hue-rotate(180deg);
+}
+
+form.contact-form{display:flex; flex-direction:column; gap:18px;}
+.contact-form input, .contact-form textarea{
+  background:transparent; border:none; border-bottom:1px solid var(--line); color:var(--paper);
+  font-family:'Oswald', sans-serif; font-size:16px; padding:14px 4px; outline:none; transition:.25s;
+}
+.contact-form input::placeholder, .contact-form textarea::placeholder{color:var(--paper-dim);}
+.contact-form input:focus, .contact-form textarea:focus{border-color:var(--orange);}
+.contact-form button{
+  margin-top:10px; align-self:flex-start; background:var(--orange); color:var(--black); border:2px solid var(--orange);
+  padding:16px 34px; font-weight:700; text-transform:uppercase; letter-spacing:1px; font-size:14px; cursor:pointer; transition:.3s;
+}
+.contact-form button:hover{background:transparent; color:var(--orange);}
+
+/* ---------- footer ---------- */
+footer{
+  border-top:1px solid var(--line); padding:40px 32px; background:var(--black);
+}
+.footer-inner{
+  max-width:1280px; margin:0 auto; display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:20px;
+}
+.footer-inner p{font-size:12px; color:var(--paper-dim); font-family:'JetBrains Mono', monospace;}
+.footer-socials{display:flex; gap:18px;}
+.footer-socials a{color:var(--paper-dim); text-decoration:none; font-size:12px; font-family:'JetBrains Mono', monospace; text-transform:uppercase; transition:.2s;}
+.footer-socials a:hover{color:var(--orange);}
+
+/* ---------- reveal animation ---------- */
+.reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+.reveal.in{opacity:1; transform:translateY(0);}
+
+/* ---------- responsive ---------- */
+
+/* Планшеты (портрет) и меньше: 768–980px — переключаем навигацию на бургер,
+   хиро становится одноколоночным, сетки сужаются до 2 колонок */
+@media (max-width:980px){
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .burger{display:flex;}
+
+  .hero{min-height:auto;}
+  .hero-inner{grid-template-columns:1fr; gap:36px;}
+  .hero-visual{order:-1;}
+  .hero-stats{gap:28px;}
+
+  .services-grid{grid-template-columns:1fr 1fr;}
+
+  .why-grid{grid-template-columns:1fr; gap:44px;}
+  .why-visual::after{display:none;}
+  .why-visual{min-height:auto; padding:36px;}
+
+  .reviews-grid{grid-template-columns:1fr 1fr; gap:18px;}
+
+  .contact-grid{grid-template-columns:1fr; gap:48px;}
+
+  .process-item{grid-template-columns:56px 1fr; gap:18px;}
+  .process-time{display:none;}
+
+  .cta-inner{flex-direction:column; align-items:flex-start; gap:26px;}
+
+  .nav-links{
+    display:none; position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; background:var(--dark); padding:10px 20px 20px; gap:2px;
+    border-bottom:1px solid var(--line); box-shadow:0 12px 24px rgba(0,0,0,0.4);
+  }
+  .nav-links.open{display:flex;}
+  .nav-links a{
+    padding:14px 4px; width:100%; border-bottom:1px solid var(--line); font-size:15px;
+  }
+  .nav-links li:last-child a{border-bottom:none;}
+  .nav-links a::after{display:none;}
+  .nav-links-call{display:block; margin-top:8px;}
+  .nav-links-call a{
+    color:var(--orange) !important; font-weight:700; border-bottom:none !important;
+  }
+}
+
+/* Малые планшеты / крупные телефоны: до 700px — карточки услуг и отзывы в одну колонку */
+@media (max-width:700px){
+  .services-grid{grid-template-columns:1fr;}
+  .service-card{min-height:auto;}
+
+  .reviews-grid{grid-template-columns:1fr;}
+  .review-card p{min-height:auto;}
+
+  .hero-buttons{flex-direction:column;}
+  .hero-buttons a{width:100%;}
+
+  .hero-stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px; width:100%;
+  }
+
+  .contact-info .val{margin-bottom:26px; font-size:19px;}
+
+  .footer-inner{flex-direction:column; text-align:center; gap:16px;}
+  .footer-socials{justify-content:center; flex-wrap:wrap; row-gap:8px;}
+}
+
+/* Телефоны: до 480px — плотная компоновка, крупные тач-зоны */
+@media (max-width:480px){
+  .logo-num{display:none;}
+  .ticker span{margin:0 12px;}
+
+  .hero h1{letter-spacing:0;}
+  .hero p{font-size:16px;}
+
+  .service-num{margin-bottom:18px;}
+  .service-card h3{font-size:26px;}
+
+  .process-item{grid-template-columns:44px 1fr; gap:14px; padding:18px 0;}
+  .process-item:hover{padding-left:0;}
+  .process-text h4{font-size:19px;}
+  .process-text p{font-size:13.5px;}
+
+  .strip-item{width:60vw; height:120px;}
+
+  .warranty-badge{margin-bottom:22px;}
+  .why-visual h3{font-size:26px;}
+
+  .review-avatar{width:36px; height:36px; font-size:16px;}
+
+  .cta h2{letter-spacing:0;}
+
+  .contact-form button{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>★ КУЗОВНОЙ РЕМОНТ</span><span>★ ПОКРАСКА В КАМЕРЕ</span><span>★ ХОДОВАЯ ЧАСТЬ</span><span>★ РЕМОНТ ДВИГАТЕЛЯ</span><span>★ АВТОЭЛЕКТРИКА</span><span>★ ДИАГНОСТИКА БЕСПЛАТНО</span>
+    <span>★ КУЗОВНОЙ РЕМОНТ</span><span>★ ПОКРАСКА В КАМЕРЕ</span><span>★ ХОДОВАЯ ЧАСТЬ</span><span>★ РЕМОНТ ДВИГАТЕЛЯ</span><span>★ АВТОЭЛЕКТРИКА</span><span>★ ДИАГНОСТИКА БЕСПЛАТНО</span>
+  </div>
+</div>
+
+<header>
+  <div class="nav">
+    <a href="#" class="logo">ГАРАЖ<span class="dot">.</span><span class="logo-num">№7</span></a>
+    <ul class="nav-links">
+      <li><a href="#services">Услуги</a></li>
+      <li><a href="#process">Как работаем</a></li>
+      <li><a href="#why">Почему мы</a></li>
+      <li><a href="#reviews">Отзывы</a></li>
+      <li><a href="#contact">Контакты</a></li>
+      <li class="nav-links-call"><a href="tel:+79786621656">Позвонить: +7 978 662-16-56</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Записаться</a>
+    <button class="burger" aria-label="menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Приём машин сегодня</div>
+      <h1>ВЕРНЁМ<br><span class="line2">ФОРМУ</span><br><span class="outline">И ХОД</span></h1>
+      <p>Кузовной ремонт, покраска, ходовая, двигатель и электрика — в одном гараже. Диагностика на месте, честная смета до начала работ, без «сюрпризов» в чеке.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn-primary">Записаться на диагностику →</a>
+        <a href="#services" class="btn-secondary">Все услуги</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>12&nbsp;лет</b><span>на рынке</span></div>
+        <div class="stat"><b>4000+</b><span>машин в работе</span></div>
+        <div class="stat"><b>24&nbsp;мес</b><span>гарантия на кузов</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="gauge-wrap">
+        <div class="gauge-ring"></div>
+        <div class="bolt b1"></div><div class="bolt b2"></div><div class="bolt b3"></div><div class="bolt b4"></div>
+        <div class="gauge-center">
+          <span class="big">7</span>
+          <span class="small">Постов ремонта</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="section-head reveal">
+    <div class="eyebrow">Что мы делаем</div>
+    <h2>Пять направлений.<br>Ноль компромиссов.</h2>
+    <p>От вмятины на крыле до полной переборки двигателя — берём авто в любом состоянии и доводим до результата, за который не стыдно.</p>
+  </div>
+  <div class="services-grid">
+
+    <div class="service-card reveal">
+      <div class="service-num">01 / 05</div>
+      <div class="service-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M4 26L10 14H30L36 26" stroke="#ff5a1f" stroke-width="2"/><rect x="4" y="26" width="32" height="7" rx="1.5" stroke="#eee9e1" stroke-width="2"/><circle cx="11" cy="33" r="3" stroke="#eee9e1" stroke-width="2"/><circle cx="29" cy="33" r="3" stroke="#eee9e1" stroke-width="2"/></svg>
+      </div>
+      <h3>Кузовной ремонт</h3>
+      <p>Рихтовка, устранение вмятин без покраски (PDR), сварочные работы, замена порогов и арок, геометрия кузова на стенде.</p>
+      <div class="service-tag">→ подробнее о ремонте</div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-num">02 / 05</div>
+      <div class="service-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M8 30C8 30 12 20 20 20C28 20 32 30 32 30" stroke="#eee9e1" stroke-width="2"/><circle cx="20" cy="12" r="6" stroke="#ff5a1f" stroke-width="2"/><path d="M20 6V2M25 9L28 6M15 9L12 6" stroke="#ff5a1f" stroke-width="2"/></svg>
+      </div>
+      <h3>Покраска</h3>
+      <p>Покрасочная камера с контролем пыли и температуры, точный подбор цвета по коду и вариться на глаз, полировка после.</p>
+      <div class="service-tag">→ подробнее о покраске</div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-num">03 / 05</div>
+      <div class="service-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="10" stroke="#eee9e1" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#ff5a1f"/><path d="M20 6V10M20 30V34M34 20H30M10 20H6M29.6 10.4L26.8 13.2M13.2 26.8L10.4 29.6M29.6 29.6L26.8 26.8M13.2 13.2L10.4 10.4" stroke="#eee9e1" stroke-width="2"/></svg>
+      </div>
+      <h3>Ходовая часть</h3>
+      <p>Замена амортизаторов, сайлентблоков, рычагов, ступиц, шаровых. Развал-схождение после любого вмешательства.</p>
+      <div class="service-tag">→ подробнее о ходовой</div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-num">04 / 05</div>
+      <div class="service-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="8" y="10" width="24" height="22" rx="2" stroke="#eee9e1" stroke-width="2"/><path d="M14 10V6M26 10V6M14 34V32M26 34V32" stroke="#eee9e1" stroke-width="2"/><path d="M15 20L18 16L22 24L25 20" stroke="#ff5a1f" stroke-width="2"/></svg>
+      </div>
+      <h3>Ремонт двигателя</h3>
+      <p>Диагностика на стенде, ремонт ГБЦ, замена ГРМ и прокладок, устранение течей и посторонних шумов, компьютерная диагностика.</p>
+      <div class="service-tag">→ подробнее о двигателе</div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-num">05 / 05</div>
+      <div class="service-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M20 4L8 22H18L16 36L32 16H21L20 4Z" stroke="#ff5a1f" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <h3>Автоэлектрика</h3>
+      <p>Поиск неисправностей проводки, ремонт генератора и стартера, установка допоборудования, компьютерная диагностика ЭБУ.</p>
+      <div class="service-tag">→ подробнее об электрике</div>
+    </div>
+
+    <div class="service-card reveal" style="background:var(--orange); color:var(--black);">
+      <div class="service-num" style="color:rgba(0,0,0,0.5);">06 / 05</div>
+      <h3 style="margin-top:auto;">Не нашли услугу?</h3>
+      <p style="color:rgba(0,0,0,0.65); margin-bottom:20px;">Опишите проблему — подскажем, беремся ли мы за неё, и дадим примерную вилку по цене.</p>
+      <a href="#contact" style="font-family:'JetBrains Mono',monospace; font-weight:700; text-transform:uppercase; font-size:13px; color:var(--black); text-decoration:none;">Написать нам →</a>
+    </div>
+
+  </div>
+</section>
+
+<section class="process" id="process">
+  <div class="section-head reveal">
+    <div class="eyebrow">Как это устроено</div>
+    <h2>Путь машины<br>по цехам</h2>
+  </div>
+  <div class="process-list">
+    <div class="process-item reveal">
+      <div class="process-step">01</div>
+      <div class="process-text"><h4>Осмотр и диагностика</h4><p>Принимаем авто, фиксируем повреждения, подключаем сканер и смотрим ходовую на подъёмнике. Составляем список работ.</p></div>
+      <div class="process-time">~40 минут</div>
+    </div>
+    <div class="process-item reveal">
+      <div class="process-step">02</div>
+      <div class="process-text"><h4>Смета и согласование</h4><p>Присылаем точную стоимость и сроки. Ничего не делаем без вашего «да» — никаких доплат по факту.</p></div>
+      <div class="process-time">В день обращения</div>
+    </div>
+    <div class="process-item reveal">
+      <div class="process-step">03</div>
+      <div class="process-text"><h4>Ремонт</h4><p>Кузовные, малярные, слесарные и электро-работы — на профильных постах, у мастеров своей специализации.</p></div>
+      <div class="process-time">1–7 дней</div>
+    </div>
+    <div class="process-item reveal">
+      <div class="process-step">04</div>
+      <div class="process-text"><h4>Контроль качества</h4><p>Проверяем геометрию, толщину ЛКП, работу узлов и электрики. Тест-драйв перед выдачей.</p></div>
+      <div class="process-time">~1 час</div>
+    </div>
+    <div class="process-item reveal">
+      <div class="process-step">05</div>
+      <div class="process-text"><h4>Выдача с гарантией</h4><p>Отдаём машину чистой, с актом выполненных работ и гарантией на все виды ремонта.</p></div>
+      <div class="process-time">По готовности</div>
+    </div>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="strip-inner">
+    <div class="strip-track">
+      <div class="strip-item"><span>Кузовной / до-после</span></div>
+      <div class="strip-item"><span>Покраска бампера</span></div>
+      <div class="strip-item"><span>Замена сайлентблоков</span></div>
+      <div class="strip-item"><span>Ремонт ГБЦ</span></div>
+      <div class="strip-item"><span>Проводка салона</span></div>
+      <div class="strip-item"><span>Полировка кузова</span></div>
+      <div class="strip-item"><span>Кузовной / до-после</span></div>
+      <div class="strip-item"><span>Покраска бампера</span></div>
+      <div class="strip-item"><span>Замена сайлентблоков</span></div>
+      <div class="strip-item"><span>Ремонт ГБЦ</span></div>
+      <div class="strip-item"><span>Проводка салона</span></div>
+      <div class="strip-item"><span>Полировка кузова</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="why" id="why">
+  <div class="why-grid">
+    <div>
+      <div class="section-head reveal" style="margin-bottom:36px;">
+        <div class="eyebrow">Почему выбирают нас</div>
+        <h2>Не автосервис<br>«на скорую руку»</h2>
+      </div>
+      <div class="why-points reveal">
+        <div class="why-point">
+          <div class="why-mark">01</div>
+          <div><h4>Своя покрасочная камера</h4><p>Не возим кузов «на сторону» — весь цикл покраски под одной крышей.</p></div>
+        </div>
+        <div class="why-point">
+          <div class="why-mark">02</div>
+          <div><h4>Мастера по направлениям</h4><p>Кузовщик не крутит двигатель, электрик не красит — каждый в своей специализации.</p></div>
+        </div>
+        <div class="why-point">
+          <div class="why-mark">03</div>
+          <div><h4>Фиксированная смета</h4><p>Цена согласовывается до начала работ и не меняется без вашего ведома.</p></div>
+        </div>
+        <div class="why-point">
+          <div class="why-mark">04</div>
+          <div><h4>Оригинал или аналог — на выбор</h4><p>Показываем варианты запчастей с разной ценой, решение всегда за вами.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="why-visual reveal">
+      <div class="warranty-badge">
+        <div class="inner"><b>24</b><span>месяца</span></div>
+      </div>
+      <h3>Гарантия на все работы</h3>
+      <p>Если что-то беспокоит после ремонта — приезжайте, разберёмся и устраним без лишних вопросов и доплат.</p>
+    </div>
+  </div>
+</section>
+
+<section class="reviews" id="reviews">
+  <div class="section-head reveal">
+    <div class="eyebrow">Отзывы клиентов</div>
+    <h2>Что говорят<br>после ремонта</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p>Приехал с помятым крылом после парковки — думал, дороже выйдет. Сделали ровно, цвет попали один в один, гараж забирать не стыдно.</p>
+      <div class="review-author"><div class="review-avatar">И</div><div><b>Игорь М.</b><span>Кузовной ремонт + покраска</span></div></div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p>Стучала подвеска полгода, в двух местах сказали «менять всё». Тут нашли конкретную деталь, поменяли за один день, тишина в салоне.</p>
+      <div class="review-author"><div class="review-avatar">Е</div><div><b>Елена П.</b><span>Ремонт ходовой части</span></div></div>
+    </div>
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p>Плавали обороты и горел чек. Диагностика показала реальную причину сразу, без замены половины датчиков наугад. Спасибо за честность.</p>
+      <div class="review-author"><div class="review-avatar">Д</div><div><b>Дмитрий К.</b><span>Двигатель + электрика</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-stripe"></div>
+  <div class="cta-inner">
+    <div>
+      <h2>Пора в гараж</h2>
+      <p>Оставьте заявку — перезвоним в течение 15 минут и запишем на бесплатную диагностику.</p>
+    </div>
+    <a href="#contact" class="btn-dark">Записаться сейчас →</a>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="section-head reveal">
+    <div class="eyebrow">Контакты</div>
+    <h2>Заедьте или напишите</h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <h3>Телефон</h3>
+      <a href="tel:+79786621656" class="val">+7 (978) 662-16-56</a>
+      <h3>Адрес</h3>
+      <span class="val">г. Ваш город, ул. Промышленная, 7</span>
+      <h3>Режим работы</h3>
+      <span class="val">Пн–Сб: 09:00–20:00</span>
+      <div class="map-box" style="margin-top:10px;">
+        <iframe src="https://yandex.ru/map-widget/v1/?ll=33.354057%2C45.223895&z=16&pt=33.354057,45.223895,pm2rdm" allowfullscreen="true"></iframe>
+      </div>
+    </div>
+    <form class="contact-form reveal" onsubmit="event.preventDefault(); this.querySelector('button').textContent='Заявка отправлена ✓';">
+      <input type="text" placeholder="Ваше имя" required>
+      <input type="tel" placeholder="Телефон" required>
+      <input type="text" placeholder="Марка и модель авто">
+      <textarea rows="4" placeholder="Что случилось с машиной?"></textarea>
+      <button type="submit">Отправить заявку</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <p>© 2026 ГАРАЖ №7. ВСЕ ПРАВА ЗАЩИЩЕНЫ.</p>
+    <div class="footer-socials">
+      <a href="#">WhatsApp</a>
+      <a href="#">Telegram</a>
+      <a href="#">Instagram</a>
+      <a href="#">Яндекс.Карты</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+},{threshold:0.15});
+reveals.forEach(el=>io.observe(el));
+
+const burger = document.querySelector('.burger');
+const navLinks = document.querySelector('.nav-links');
+
+burger.addEventListener('click', ()=>{
+  navLinks.classList.toggle('open');
+});
+
+navLinks.querySelectorAll('a').forEach(link=>{
+  link.addEventListener('click', ()=> navLinks.classList.remove('open'));
+});
+
+window.addEventListener('resize', ()=>{
+  if(window.innerWidth > 980){ navLinks.classList.remove('open'); }
+});
+</script>
+
+</body>
+</html>
